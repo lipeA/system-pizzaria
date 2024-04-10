@@ -1,0 +1,121 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// criar uma migration: npx prisma migrate dev
+
+// table dos Usuarios
+model User{
+  id String @id @default(uuid())
+  name String
+  email String
+  password String
+  created_at DateTime? @default(now())
+  updated_at DateTime? @default(now())
+
+
+
+  @@map("users")
+}
+
+
+// table categorias
+model Category{
+  id String @id @default(uuid())
+  name String
+  created_at DateTime? @default(now())
+  updated_at DateTime? @default(now())
+
+  // fazenda a relação com a table Product
+  products Product[]
+
+
+
+ @@map("categories")
+}
+
+
+model Product{
+  id String @id @default(uuid())
+  name String
+  price String
+  description String
+  banner String
+  created_at DateTime? @default(now())
+  updated_at DateTime? @default(now())
+
+  // fazendo a relação com table category
+  categories_id String
+  category Category @relation(fields: [categories_id], references: [id])
+
+  // fazendo a relação com a table de Itens
+  items Item[]
+
+  @@map("products")
+}
+
+model Order{
+  id String @id @default(uuid())
+  table Int
+  status Boolean @default(false)
+  draft Boolean @default(true)
+  created_at DateTime? @default(now())
+  updated_at DateTime? @default(now())
+
+
+  // fazendo a relação com a table itens
+  items Item[]
+
+
+
+  @@map("orders")
+}
+
+model Item{
+  id String @id @default(uuid())
+  amount Int
+  created_at DateTime? @default(now())
+  updated_at DateTime? @default(now())
+
+
+  // fazendo a relação com a table orders
+  order_id String
+  order Order @relation(fields: [order_id], references: [id])
+
+  // fazendo a relação com a table de products
+  produt_id String
+  product Product @relation(fields: [produt_id], references: [id])
+
+  @@map("items")
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
